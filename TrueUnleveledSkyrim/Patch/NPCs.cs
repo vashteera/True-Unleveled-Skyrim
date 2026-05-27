@@ -610,12 +610,14 @@ namespace TrueUnleveledSkyrim.Patch
         /// <param name="linkCache"></param>
         private static void PopulateByInventory(INpcSpawnGetter npcSpawn, IDictionary<Skill, float> skillWeights, ILinkCache linkCache)
         {
+            HashSet<FormKey> visited = new();
             List<ValueTuple<INpcSpawnGetter, int>> nodes = new();
             if (npcSpawn is INpcGetter npcGetter)
             {
                 if (npcGetter.Configuration.TemplateFlags.HasFlag(NpcConfiguration.TemplateFlag.Inventory) && npcGetter.Template.TryResolve(linkCache, out var newNpcSingleSpawn))
                 {
-                    nodes.Add(new(newNpcSingleSpawn, 1));
+                    if (visited.Add(newNpcSingleSpawn.FormKey))
+                        nodes.Add(new(newNpcSingleSpawn, 1));
                 }
                 else // Populate skill weights by inventory.
                 {
@@ -638,7 +640,8 @@ namespace TrueUnleveledSkyrim.Patch
                     if (listEntry.Data is null || !listEntry.Data.Reference.TryResolve(linkCache, out var newNpcListSpawn))
                         continue;
 
-                    nodes.Add(new(newNpcListSpawn, listGetter.Entries!.Count));
+                    if (visited.Add(newNpcListSpawn.FormKey))
+                        nodes.Add(new(newNpcListSpawn, listGetter.Entries!.Count));
                 }
             }
 
@@ -654,14 +657,16 @@ namespace TrueUnleveledSkyrim.Patch
                         if (child.Data is null || !child.Data.Reference.TryResolve(linkCache, out var listSpawn))
                             continue;
 
-                        nodes.Add(new(listSpawn, listGetter.Entries!.Count));
+                        if (visited.Add(listSpawn.FormKey))
+                            nodes.Add(new(listSpawn, listGetter.Entries!.Count));
                     }
                 }
                 else if (node.Item1 is INpcGetter singleGetter)
                 {
                     if (singleGetter.Configuration.TemplateFlags.HasFlag(NpcConfiguration.TemplateFlag.Inventory) && singleGetter.Template.TryResolve(linkCache, out var singleSpawn))
                     {
-                        nodes.Add(new(singleSpawn, 1));
+                        if (visited.Add(singleSpawn.FormKey))
+                            nodes.Add(new(singleSpawn, 1));
                     }
                     else // Populate skill weights by inventory.
                     {
@@ -688,14 +693,16 @@ namespace TrueUnleveledSkyrim.Patch
         /// <param name="linkCache"></param>
         private static void PopulateBySpells(INpcSpawnGetter npcSpawn, IDictionary<Skill, float> skillWeights, ILinkCache linkCache)
         {
+            HashSet<FormKey> visited = new();
             List<ValueTuple<INpcSpawnGetter, int>> nodes = new();
             if (npcSpawn is INpcGetter npcGetter)
             {
                 if (npcGetter.Configuration.TemplateFlags.HasFlag(NpcConfiguration.TemplateFlag.Inventory) && npcGetter.Template.TryResolve(linkCache, out var newNpcSingleSpawn))
                 {
-                    nodes.Add(new(newNpcSingleSpawn, 1));
+                    if (visited.Add(newNpcSingleSpawn.FormKey))
+                        nodes.Add(new(newNpcSingleSpawn, 1));
                 }
-                else // Populate skill weights by inventory.
+                else // Populate skill weights by spells.
                 {
                     foreach (var spellEntry in npcGetter.ActorEffect.EmptyIfNull())
                     {
@@ -716,7 +723,8 @@ namespace TrueUnleveledSkyrim.Patch
                     if (listEntry.Data is null || !listEntry.Data.Reference.TryResolve(linkCache, out var newNpcListSpawn))
                         continue;
 
-                    nodes.Add(new(newNpcListSpawn, listGetter.Entries!.Count));
+                    if (visited.Add(newNpcListSpawn.FormKey))
+                        nodes.Add(new(newNpcListSpawn, listGetter.Entries!.Count));
                 }
             }
 
@@ -732,16 +740,18 @@ namespace TrueUnleveledSkyrim.Patch
                         if (child.Data is null || !child.Data.Reference.TryResolve(linkCache, out var listSpawn))
                             continue;
 
-                        nodes.Add(new(listSpawn, listGetter.Entries!.Count));
+                        if (visited.Add(listSpawn.FormKey))
+                            nodes.Add(new(listSpawn, listGetter.Entries!.Count));
                     }
                 }
                 else if (node.Item1 is INpcGetter singleGetter)
                 {
                     if (singleGetter.Configuration.TemplateFlags.HasFlag(NpcConfiguration.TemplateFlag.Inventory) && singleGetter.Template.TryResolve(linkCache, out var singleSpawn))
                     {
-                        nodes.Add(new(singleSpawn, 1));
+                        if (visited.Add(singleSpawn.FormKey))
+                            nodes.Add(new(singleSpawn, 1));
                     }
-                    else // Populate skill weights by inventory.
+                    else // Populate skill weights by spells.
                     {
                         foreach (var spellEntry in singleGetter.ActorEffect.EmptyIfNull())
                         {
