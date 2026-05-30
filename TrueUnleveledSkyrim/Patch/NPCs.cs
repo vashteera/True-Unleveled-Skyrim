@@ -490,6 +490,8 @@ namespace TrueUnleveledSkyrim.Patch
         /// <param name="linkCache"></param>
         private static void GetItemSkillWeights(ILeveledItemGetter lvliGetter, IDictionary<Skill, float> skillWeights, ILinkCache linkCache, float divisor = 1)
         {
+            HashSet<FormKey> visited = new();
+            visited.Add(lvliGetter.FormKey);
             List<ILeveledItemEntryGetter> nodes = lvliGetter.Entries?.ToList() ?? new();
             while (nodes.Any())
             {
@@ -500,6 +502,9 @@ namespace TrueUnleveledSkyrim.Patch
 
                 if (entryGetter is ILeveledItemGetter lvliNode)
                 {
+                    if (!visited.Add(lvliNode.FormKey))
+                        continue;
+
                     foreach (var child in lvliNode.Entries.EmptyIfNull())
                         nodes.Add(child);
                 }
@@ -585,6 +590,8 @@ namespace TrueUnleveledSkyrim.Patch
         /// <param name="divisor"></param>
         private static void GetSpellSkillWeights(ILeveledSpellGetter leveledSpellGetter, IDictionary<Skill, float> skillWeights, ILinkCache linkCache, float divisor = 1)
         {
+            HashSet<FormKey> visited = new();
+            visited.Add(leveledSpellGetter.FormKey);
             List<ILeveledSpellEntryGetter> nodes = leveledSpellGetter.Entries?.ToList() ?? new();
             while (nodes.Any())
             {
@@ -595,6 +602,9 @@ namespace TrueUnleveledSkyrim.Patch
 
                 if (entryGetter is ILeveledSpellGetter lvlSpellNode)
                 {
+                    if (!visited.Add(lvlSpellNode.FormKey))
+                        continue;
+
                     foreach (var child in lvlSpellNode.Entries.EmptyIfNull())
                         nodes.Add(child);
                 }
