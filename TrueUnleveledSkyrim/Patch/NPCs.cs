@@ -631,11 +631,13 @@ namespace TrueUnleveledSkyrim.Patch
                         {
                             Console.WriteLine("GetItemSkillWeights 1");
                             GetItemSkillWeights(leveledItemGetter, skillWeights, linkCache);
+                            Console.WriteLine("Done: GetItemSkillWeights 1");
                         }
                         else
                         {
                             Console.WriteLine("GetItemSkillWeights 2");
                             GetItemSkillWeights(itemGetter, skillWeights);
+                            Console.WriteLine("Done: GetItemSkillWeights 2");
                         }
                     }
                 }
@@ -686,11 +688,13 @@ namespace TrueUnleveledSkyrim.Patch
                             {
                                 Console.WriteLine("GetItemSkillWeights 3");
                                 GetItemSkillWeights(leveledItemGetter, skillWeights, linkCache, node.Item2);
+                                Console.WriteLine("Done: GetItemSkillWeights 3");
                             }
                             else
                             {
                                 Console.WriteLine("GetItemSkillWeights 4");
                                 GetItemSkillWeights(itemGetter, skillWeights, node.Item2);
+                                Console.WriteLine("Done: GetItemSkillWeights 4");
                             }
                         }
                     }
