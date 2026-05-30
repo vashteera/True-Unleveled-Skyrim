@@ -612,6 +612,7 @@ namespace TrueUnleveledSkyrim.Patch
         {
             HashSet<FormKey> visited = new();
             List<ValueTuple<INpcSpawnGetter, int>> nodes = new();
+            Console.WriteLine("Step 1");
             if (npcSpawn is INpcGetter npcGetter)
             {
                 if (npcGetter.Configuration.TemplateFlags.HasFlag(NpcConfiguration.TemplateFlag.Inventory) && npcGetter.Template.TryResolve(linkCache, out var newNpcSingleSpawn))
@@ -626,10 +627,16 @@ namespace TrueUnleveledSkyrim.Patch
                         if (!itemEntry.Item.Item.TryResolve(linkCache, out var itemGetter))
                             continue;
 
-                        if (itemGetter is ILeveledItemGetter leveledItemGetter)
+                        if (itemGetter is ILeveledItemGetter leveledItemGetter) 
+                        {
+                            Console.WriteLine("GetItemSkillWeights 1");
                             GetItemSkillWeights(leveledItemGetter, skillWeights, linkCache);
+                        }
                         else
+                        {
+                            Console.WriteLine("GetItemSkillWeights 2");
                             GetItemSkillWeights(itemGetter, skillWeights);
+                        }
                     }
                 }
             }
@@ -644,7 +651,7 @@ namespace TrueUnleveledSkyrim.Patch
                         nodes.Add(new(newNpcListSpawn, listGetter.Entries!.Count));
                 }
             }
-
+            Console.WriteLine("Step 2: " + nodes.Count);
             while (nodes.Any())
             {
                 var node = nodes.Last();
@@ -676,9 +683,15 @@ namespace TrueUnleveledSkyrim.Patch
                                 continue;
 
                             if (itemGetter is ILeveledItemGetter leveledItemGetter)
+                            {
+                                Console.WriteLine("GetItemSkillWeights 3");
                                 GetItemSkillWeights(leveledItemGetter, skillWeights, linkCache, node.Item2);
+                            }
                             else
+                            {
+                                Console.WriteLine("GetItemSkillWeights 4");
                                 GetItemSkillWeights(itemGetter, skillWeights, node.Item2);
+                            }
                         }
                     }
                 }
@@ -785,11 +798,8 @@ namespace TrueUnleveledSkyrim.Patch
         private static void PopulateSkillWeights(Npc npc, IDictionary<Skill, float> skillWeights, ILinkCache linkCache)
         {
             // Populate weights.
-            Console.WriteLine("1. PopulateByInventory");
             PopulateByInventory(npc, skillWeights, linkCache);
-            Console.WriteLine("2. PopulateBySpells");
             PopulateBySpells(npc, skillWeights, linkCache);
-            Console.WriteLine("3. PopulateByOutfit");
             PopulateByOutfit(npc, skillWeights, linkCache);
 
             // Ceil them all to the nearest whole value.
