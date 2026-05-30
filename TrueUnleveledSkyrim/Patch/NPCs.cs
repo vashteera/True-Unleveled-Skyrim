@@ -785,8 +785,11 @@ namespace TrueUnleveledSkyrim.Patch
         private static void PopulateSkillWeights(Npc npc, IDictionary<Skill, float> skillWeights, ILinkCache linkCache)
         {
             // Populate weights.
+            Console.WriteLine("1. PopulateByInventory");
             PopulateByInventory(npc, skillWeights, linkCache);
+            Console.WriteLine("2. PopulateBySpells");
             PopulateBySpells(npc, skillWeights, linkCache);
+            Console.WriteLine("3. PopulateByOutfit");
             PopulateByOutfit(npc, skillWeights, linkCache);
 
             // Ceil them all to the nearest whole value.
@@ -881,25 +884,21 @@ namespace TrueUnleveledSkyrim.Patch
             IDictionary<Skill, float> skillWeights = new Dictionary<Skill, float>();
             classGetter.SkillWeights.ForEach(x => skillWeights[x.Key] = 0); // Populate the dictionary.
 
-            Console.WriteLine("Start Rebuild NPC Classes: " + npc.Name?.String);
-            Console.WriteLine("1. PopulateSkillWeights");
+            Console.WriteLine("Rebuild NPC Classes: " + npc.Name?.String);
             PopulateSkillWeights(npc, skillWeights, linkCache);
             if (skillWeights.All(x => x.Value == 0)) // No data for generating new class.
                 return false;
             
             // Make a new class unique to the NPC.
-            Console.WriteLine("2. Make a new class unique to the NPC.");
             var newClass = state.PatchMod.Classes.AddNew();
             newClass.DeepCopyIn(classGetter);
             newClass.EditorID = "TUSClass" + npc.EditorID;
             npc.Class = newClass.ToLink();
 
-            Console.WriteLine("3. CalculateClassWeights.");
             CalculateClassWeights(newClass, skillWeights);
             newClass.SkillWeights.ForEach(x => newClass.SkillWeights[x.Key] = 0);
             skillWeights.ForEach(x => newClass.SkillWeights[x.Key] = (byte)x.Value);
 
-            Console.WriteLine("Done.");
             return true;
         }
 
