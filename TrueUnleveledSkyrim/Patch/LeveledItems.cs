@@ -162,8 +162,14 @@ namespace TrueUnleveledSkyrim.Patch
 
         private static void ChangeNewLVLIEntries(LeveledItem itemList, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, ILinkCache linkCache)
         {
-            bool isWeakEntry = itemList.EditorID!.Contains(TUSConstants.WeakPostfix, StringComparison.OrdinalIgnoreCase);
-            bool isStrongEntry = !isWeakEntry && itemList.EditorID!.Contains(TUSConstants.StrongPostfix, StringComparison.OrdinalIgnoreCase);
+            if (itemList.EditorID is null)
+            {
+                Console.WriteLine($"[WARN] Skipping leveled item with null EditorID: FormKey={itemList.FormKey} (mod: {itemList.FormKey.ModKey.FileName})");
+                return;
+            }
+
+            bool isWeakEntry = itemList.EditorID.Contains(TUSConstants.WeakPostfix, StringComparison.OrdinalIgnoreCase);
+            bool isStrongEntry = !isWeakEntry && itemList.EditorID.Contains(TUSConstants.StrongPostfix, StringComparison.OrdinalIgnoreCase);
             if (!isWeakEntry && !isStrongEntry)
                 return;
 
