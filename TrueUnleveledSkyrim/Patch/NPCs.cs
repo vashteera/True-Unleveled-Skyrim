@@ -16,7 +16,6 @@ namespace TrueUnleveledSkyrim.Patch
     {
         private static readonly List<string> ExcludedClasses = new() { "smith", "alchem", "enchant", "vendor", "apothec" };
 
-        private static FollowerList? followerList;
         private static ExcludedPerks? excludedPerks;
         private static ExcludedNPCs? excludedNPCs;
         private static NPCEDIDs? customNPCsByID;
@@ -420,21 +419,19 @@ namespace TrueUnleveledSkyrim.Patch
                 return false;
 
             bool isFollower = npc.Factions.Any(rankPlacement => rankPlacement.Faction.Equals(Skyrim.Faction.PotentialFollowerFaction) || rankPlacement.Faction.Equals(Skyrim.Faction.PotentialHireling));
-            foreach (FollowerEntry? followerEntry in followerList!.Followers)
+            foreach (CustomFollowerEntry? followerEntry in Patcher.ModSettings.Value.NPCs.CustomFollowers)
             {
                 if (npc.EditorID.Contains(followerEntry.Key, StringComparison.OrdinalIgnoreCase))
                     isFollower = true;
-
-                foreach (string? forbiddenKey in followerEntry.ForbiddenKeys)
-                {
-                    if (npc.EditorID.Contains(forbiddenKey))
+                    foreach (string? forbiddenKey in followerEntry.ForbiddenKeys)
                     {
-                        isFollower = false;
-                        break;
+                        if (npc.EditorID.Contains(forbiddenKey))
+                        {
+                            isFollower = false;
+                            break;
+                        }
                     }
-                }
-
-                break;
+                    break;
             }
 
             return isFollower;
@@ -910,7 +907,6 @@ namespace TrueUnleveledSkyrim.Patch
         // Main function to unlevel all NPCs.
         public static void PatchNPCs(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            followerList = JsonHelper.LoadConfig<FollowerList>(TUSConstants.FollowersPath);
             excludedPerks = JsonHelper.LoadConfig<ExcludedPerks>(TUSConstants.ExcludedPerksPath);
             excludedNPCs = JsonHelper.LoadConfig<ExcludedNPCs>(TUSConstants.ExcludedNPCsPath);
             customNPCsByID = JsonHelper.LoadConfig<NPCEDIDs>(TUSConstants.NPCEDIDPath);

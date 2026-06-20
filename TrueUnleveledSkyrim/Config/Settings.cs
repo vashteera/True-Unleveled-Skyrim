@@ -6,6 +6,15 @@ using Mutagen.Bethesda.WPF.Reflection.Attributes;
 
 namespace TrueUnleveledSkyrim.Config
 {
+    public class CustomFollowerEntry
+    {
+        [Tooltip("EditorID substring that identifies this follower NPC (case-insensitive partial match).")]
+        public string Key { get; set; } = string.Empty;
+
+        [Tooltip("If the EditorID contains any of these substrings the entry is ignored, allowing you to exclude specific NPCs that would otherwise match the key above.")]
+        public List<string> ForbiddenKeys { get; set; } = new();
+    }
+
     public class TUSConfig
     {
         [Tooltip("If enabled, Encounter Zones will be unleveled according to the specified settings.")]
@@ -118,6 +127,22 @@ namespace TrueUnleveledSkyrim.Config
 
         [Tooltip("NPCs that have any of the keywords on this list, either in their own entry or their race entry, will not have their perks modified in any way. Useful if you want to stop undead or vampires from getting perks distributed among them.")]
         public List<FormLink<IKeywordGetter>> PerkDistributionFilter { get; set; } = new();
+
+
+        [Tooltip("Additional follower NPCs identified by EditorID substring. These NPCs will be treated as followers for the purposes of follower scaling, in addition to NPCs with the standard follower factions.")]
+        [SettingName("Custom Followers")]
+        public List<CustomFollowerEntry> CustomFollowers { get; set; } = new()
+        {
+            new() { Key = "Inigo", ForbiddenKeys = new() },
+            new() { Key = "Sofia", ForbiddenKeys = new() },
+            new() { Key = "Vilja", ForbiddenKeys = new() },
+            new() { Key = "Hoth", ForbiddenKeys = new() },
+            new() { Key = "Cerwiden", ForbiddenKeys = new() },
+            new() { Key = "Serana", ForbiddenKeys = new() },
+            new() { Key = "Caesia", ForbiddenKeys = new() },
+            new() { Key = "Kate_Selene", ForbiddenKeys = new() },
+            new() { Key = "TaniaTheHermit", ForbiddenKeys = new() },
+        };
     }
 
     public class TUSConfig_Morrowloot

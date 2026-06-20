@@ -15,7 +15,6 @@ namespace TrueUnleveledSkyrim.Config
 
         // Json config paths.
         public static string ArtifactKeysPath { get; set; } = "artifactKeys.json";
-        public static string FollowersPath { get; set; } = "customFollowers.json";
         public static string ExcludedLVLIPath { get; set; } = "excludedLVLI.json";
         public static string ExcludedNPCsPath { get; set; } = "excludedNPCs.json";
         public static string ExcludedPerksPath { get; set; } = "excludedPerks.json";
@@ -30,7 +29,6 @@ namespace TrueUnleveledSkyrim.Config
         public static void GetPaths(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
             ArtifactKeysPath = Path.Combine(state.ExtraSettingsDataPath!, ArtifactKeysPath);
-            FollowersPath = Path.Combine(state.ExtraSettingsDataPath!, FollowersPath);
             ExcludedLVLIPath = Path.Combine(state.ExtraSettingsDataPath!, ExcludedLVLIPath);
             ExcludedNPCsPath = Path.Combine(state.ExtraSettingsDataPath!, ExcludedNPCsPath);
             ExcludedPerksPath = Path.Combine(state.ExtraSettingsDataPath!, ExcludedPerksPath);
