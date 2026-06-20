@@ -444,7 +444,7 @@ namespace TrueUnleveledSkyrim.Patch
         {
             if (!IsFollower(npc))
                 return false;
-
+            Console.WriteLine("Scaling Follower: " + npc.EditorID);
             short currLevel = (npc.Configuration.Level as NpcLevel)?.Level ?? 40;
             npc.Configuration.Level = new PcLevelMult { LevelMult = 1 };
             npc.Configuration.CalcMinLevel = Math.Max(npc.Configuration.CalcMinLevel, (short)1);
