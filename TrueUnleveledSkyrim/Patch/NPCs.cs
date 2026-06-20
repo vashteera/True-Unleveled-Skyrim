@@ -417,8 +417,10 @@ namespace TrueUnleveledSkyrim.Patch
         {
             bool Sofia_debug = false;
             if (npc.EditorID == "JJSofiaFollower")
+            {
                 Console.WriteLine("Start Sofia Debug");
                 Sofia_debug = true;
+            }
             if (!Patcher.ModSettings.Value.NPCs.ScalingFollowers || npc.EditorID is null)
             {
                 if (Sofia_debug)
