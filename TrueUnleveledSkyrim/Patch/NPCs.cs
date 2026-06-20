@@ -415,44 +415,26 @@ namespace TrueUnleveledSkyrim.Patch
 
         private static bool IsFollower(Npc npc)
         {
-            bool Sofia_debug = false;
-            if (npc.EditorID == "JJSofiaFollower")
-            {
-                Console.WriteLine("Start Sofia Debug");
-                Sofia_debug = true;
-            }
             if (!Patcher.ModSettings.Value.NPCs.ScalingFollowers || npc.EditorID is null)
-            {
-                if (Sofia_debug)
-                    Console.WriteLine("Check Point 1: false");
                 return false;
-            }
 
             bool isFollower = npc.Factions.Any(rankPlacement => rankPlacement.Faction.Equals(Skyrim.Faction.PotentialFollowerFaction) || rankPlacement.Faction.Equals(Skyrim.Faction.PotentialHireling));
-            if (Sofia_debug)
-                Console.WriteLine("Check Point 2: " + isFollower);
             foreach (CustomFollowerEntry? followerEntry in Patcher.ModSettings.Value.NPCs.CustomFollowers)
             {
                 if (npc.EditorID.Contains(followerEntry.Key, StringComparison.OrdinalIgnoreCase))
                 {
                     isFollower = true;
-                    if (Sofia_debug)
-                        Console.WriteLine("Check Point 3: " + isFollower);
                     foreach (string? forbiddenKey in followerEntry.ForbiddenKeys)
                     {
                         if (npc.EditorID.Contains(forbiddenKey))
                         {
                             isFollower = false;
-                            if (Sofia_debug)
-                                Console.WriteLine("Check Point 4: " + isFollower);
                             break;
                         }
                     }
                     break;
                 }
             }
-            if (Sofia_debug)
-                Console.WriteLine("Check Point 5: " + isFollower);
             return isFollower;
         }
 
