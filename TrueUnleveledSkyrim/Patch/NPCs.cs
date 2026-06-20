@@ -434,6 +434,7 @@ namespace TrueUnleveledSkyrim.Patch
             foreach (CustomFollowerEntry? followerEntry in Patcher.ModSettings.Value.NPCs.CustomFollowers)
             {
                 if (npc.EditorID.Contains(followerEntry.Key, StringComparison.OrdinalIgnoreCase))
+                {
                     isFollower = true;
                     if (Sofia_debug)
                         Console.WriteLine("Check Point 3: " + isFollower);
@@ -448,6 +449,7 @@ namespace TrueUnleveledSkyrim.Patch
                         }
                     }
                     break;
+                }
             }
             if (Sofia_debug)
                 Console.WriteLine("Check Point 5: " + isFollower);
